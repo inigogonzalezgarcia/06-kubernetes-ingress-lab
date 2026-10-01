@@ -56,11 +56,17 @@ echo "== Cilium policies"
 code=$(curl_gw -o /dev/null -w '%{http_code}' "https://${HOST}:18443/env")
 if [ "${code}" = "403" ]; then ok "L7 policy blocks /env through the gateway (403)"; else bad "/env should be blocked with 403, got ${code}"; fi
 
-if kubectl run np-check -n default --image="${BUSYBOX}" --rm -i --restart=Never --quiet -- \
-     wget -q -O /dev/null -T 5 http://orders.apps.svc.cluster.local:9898/ >/dev/null 2>&1; then
+# The name must resolve and the connection must time out: a DNS error or a failed image pull
+# would also "fail", so the error message is checked, not just the exit code.
+out=$(kubectl run np-check -n default --image="${BUSYBOX}" --rm -i --restart=Never --quiet -- \
+  wget -q -O /dev/null -T 5 http://orders.apps.svc.cluster.local:9898/ 2>&1)
+rc=$?
+if [ "${rc}" -eq 0 ]; then
   bad "A pod in another namespace reached the app directly"
+elif echo "${out}" | grep -qi 'timed out'; then
+  ok "Pods outside the gateway cannot reach the app directly (connection dropped by policy)"
 else
-  ok "Pods outside the gateway cannot reach the app directly"
+  bad "Inconclusive bypass check: ${out:0:200}"
 fi
 
 echo "== Rate limit"
