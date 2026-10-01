@@ -1,0 +1,10 @@
+# One control plane, two workers. No default CNI and no kube-proxy: Cilium replaces both.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  disableDefaultCNI: true
+  kubeProxyMode: "none"
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
