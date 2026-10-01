@@ -1,0 +1,47 @@
+name: e2e
+
+# Builds the whole lab on a fresh kind cluster and runs scripts/test.sh.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: shellcheck -x scripts/*.sh
+
+  e2e:
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.22.0
+
+      - name: Install kind
+        run: |
+          source scripts/versions.env
+          curl -fsSLo kind "https://github.com/kubernetes-sigs/kind/releases/download/${KIND_VERSION}/kind-linux-amd64"
+          chmod +x kind && sudo mv kind /usr/local/bin/kind
+          kind version
+
+      - name: Build the lab
+        run: bash scripts/up.sh
+
+      - name: Test the lab
+        run: bash scripts/test.sh
+
+      - name: Diagnostics
+        if: failure()
+        run: bash scripts/diagnose.sh
