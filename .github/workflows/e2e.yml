@@ -32,8 +32,9 @@ jobs:
       - name: Install kind
         run: |
           source scripts/versions.env
-          curl -fsSLo kind "https://github.com/kubernetes-sigs/kind/releases/download/${KIND_VERSION}/kind-linux-amd64"
-          chmod +x kind && sudo mv kind /usr/local/bin/kind
+          # Downloaded to /tmp: the repository already has a kind/ directory.
+          curl -fsSLo /tmp/kind "https://github.com/kubernetes-sigs/kind/releases/download/${KIND_VERSION}/kind-linux-amd64"
+          sudo install -m 0755 /tmp/kind /usr/local/bin/kind
           kind version
 
       - name: Build the lab
