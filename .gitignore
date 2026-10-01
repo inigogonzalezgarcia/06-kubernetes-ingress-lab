@@ -1,0 +1,16 @@
+# Local kubeconfigs, keys and generated files
+*.kubeconfig
+kubeconfig
+*.pem
+*.key
+*.crt
+.env
+
+# Local AI tooling
+.claude/
+.agents/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
