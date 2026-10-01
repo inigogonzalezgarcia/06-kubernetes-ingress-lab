@@ -1,0 +1,24 @@
+# Cilium as CNI and kube-proxy replacement on kind.
+kubeProxyReplacement: true
+# Without kube-proxy, Cilium must reach the API server directly (kind's control-plane container).
+k8sServiceHost: ingress-lab-control-plane
+k8sServicePort: 6443
+ipam:
+  mode: kubernetes
+image:
+  pullPolicy: IfNotPresent
+operator:
+  replicas: 1
+# Envoy Gateway handles north-south traffic; Cilium's own Gateway API support stays off.
+gatewayAPI:
+  enabled: false
+# L2 announcements make LoadBalancer IPs from the IP pool answer ARP on the kind network.
+l2announcements:
+  enabled: true
+externalIPs:
+  enabled: true
+# Hubble: flow visibility, including verdicts of the L7 policy.
+hubble:
+  enabled: true
+  relay:
+    enabled: true
