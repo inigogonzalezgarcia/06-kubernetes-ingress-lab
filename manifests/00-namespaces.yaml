@@ -1,0 +1,19 @@
+# gateway: the shared Gateway and its certificate (platform team).
+# apps:    application workloads; the label is what lets their routes attach to the Gateway.
+# dns:     in-cluster authoritative DNS (BIND) and external-dns.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gateway
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apps
+  labels:
+    gateway-access: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dns

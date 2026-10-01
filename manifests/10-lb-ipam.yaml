@@ -1,0 +1,20 @@
+# Cilium LB IPAM hands out LoadBalancer IPs from this range; L2 announcements answer ARP for
+# them on the kind Docker network. up.sh replaces LB_START / LB_STOP with addresses at the top
+# of that network's subnet, which Docker does not hand out to containers.
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: lab-pool
+spec:
+  blocks:
+    - start: "LB_START"
+      stop: "LB_STOP"
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: lab-l2
+spec:
+  loadBalancerIPs: true
+  interfaces:
+    - ^eth[0-9]+
