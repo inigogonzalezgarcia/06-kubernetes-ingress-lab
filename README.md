@@ -68,10 +68,6 @@ INFO  reached https://orders.lab.example on 172.18.255.241 through Cilium L2 ann
 - [07 · AWS Private Connectivity](https://github.com/inigogonzalezgarcia/07-aws-private-connectivity): the same ideas (private names, narrow access, one service at a time) with AWS PrivateLink and Terraform.
 - [08 · Edge Health & SLO Monitor](https://github.com/inigogonzalezgarcia/08-edge-health-slo-monitor): DNS, TLS and HTTP probes with SLOs that can watch `orders.lab.example`.
 
-## How AI was used
-
-Built with an AI assistant (Claude) as a pair programmer: it drafted the manifests, scripts and documentation from the scope I set. The CI pipeline builds the lab from scratch and runs every check on each push; nothing is marked as working unless that run passes. Responsibility for the result stays with me.
-
 ## Roadmap
 
 - Contribute back: documentation or a small fix to external-dns, Envoy Gateway or Cilium, based on what this lab surfaces.
